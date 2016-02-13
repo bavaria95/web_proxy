@@ -4,6 +4,7 @@
 import socket
 
 DEBUG = True
+MAX_DATA_RECV = 4096
 
 def init_socket(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,8 +19,12 @@ def init_socket(port):
 def wait_for_input(sock):
     while True:
         conn, client_addr = sock.accept()
-        print(conn)
-        print(client_addr)
+        request = conn.recv(MAX_DATA_RECV)
+        print(request)
+        
+    conn.close()
+
 
 sock = init_socket(10042)
 wait_for_input(sock)
+
