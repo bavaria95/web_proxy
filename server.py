@@ -15,4 +15,11 @@ def init_socket(port):
 
     return sock
 
-init_socket(10042)
+def wait_for_input(sock):
+    while True:
+        conn, client_addr = sock.accept()
+        print(conn)
+        print(client_addr)
+
+sock = init_socket(10042)
+wait_for_input(sock)
