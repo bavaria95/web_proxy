@@ -39,7 +39,9 @@ def send_request_to_the_server(request):
         if type(e) != socket.timeout:
             print "Runtime Error:", e
             sys.exit(1)
-
+    except:
+        return ''
+        
     finally:
         if sock_server:
             sock_server.close()
@@ -49,24 +51,19 @@ def send_request_to_the_server(request):
 def parse_host_and_port(request):
     request_line = request.split('\n')[0].split()
 
-    try:
-        url = request_line[1]
-        m = re.search('(https?:\/\/)?(w{3}\.)?([^:/]*)[^:]*(:\d+)?', url)
-        if DEBUG:
-            print(m.group(3))
-            print(m.group(4))
-            print
+    url = request_line[1]
+    m = re.search('(https?:\/\/)?(w{3}\.)?([^:/]*)[^:]*(:\d+)?', url)
+    if DEBUG:
+        print(m.group(3))
+        print(m.group(4))
+        print
 
-        host = m.group(3)
+    host = m.group(3)
 
-        if m.group(4):
-            port = int(m.group(4)[1: ])
-        else:
-            # default then
-            port = 80
-
-    except:
-        host = 'google.com'
+    if m.group(4):
+        port = int(m.group(4)[1: ])
+    else:
+        # default then
         port = 80
 
     return (host, port)
