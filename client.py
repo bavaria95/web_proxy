@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 import sys
 import socket
 import signal
@@ -14,8 +15,7 @@ def send_request_to_the_server(request):
         sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # test server, later would be parsed from headers
-        host = 'gaia.cs.umass.edu'
-        port = 80
+        host, port = parse_host_and_port(request)
         
         sock_server.connect((host, port))  
 
@@ -45,3 +45,30 @@ def send_request_to_the_server(request):
             sock_server.close()
 
     return ''.join(buf)
+
+def parse_host_and_port(request):
+    request_line = request.split('\n')[0].split()
+    print(request_line[1])
+    # if request_line[0].lower() == 'get':
+    if True:
+
+        m = re.search('(https?:\/\/)?(w{3}\.)?([^:/]*)[^:]*(:\d+)?', request_line[1])
+        if DEBUG:
+            print(m.group(1))
+            print(m.group(2))
+            print(m.group(3))
+            print(m.group(4))
+            print
+
+        host = m.group(3)
+
+        if m.group(4):
+            port = int(m.group(4)[1: ])
+        else:
+            # default then
+            port = 80
+    else:
+        host = 'gaia.cs.umass.edu'
+        port = 80
+
+    return (host, port)
