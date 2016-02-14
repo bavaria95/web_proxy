@@ -3,9 +3,8 @@
 
 import socket
 import sys
-
-DEBUG = True
-MAX_DATA_RECV = 4096
+import client
+from config import *
 
 def init_socket(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,38 +24,14 @@ def wait_for_input(sock_browser):
             print(request)
         
         try:
-            # create a socket to connect to the webserver
-            sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            resp = client.send_request_to_the_server(request)
 
-            # test server, later would be parsed from headers
-            sock_server.connect(('gaia.cs.umass.edu', 80))  
-            sock_server.send(request)         # send request to webserver
+            conn.send(''.join(resp))
+            if DEBUG:
+                print(resp)
 
-            # until there is data - receive from server and send to browser
-            while True:
-                # receive data from web server
-                data = sock_server.recv(MAX_DATA_RECV)
-
-                if (len(data) > 0):
-                    # send back to browser
-                    conn.send(data)
-                    if DEBUG:
-                        print(data)
-                else:
-                    break
-
-            sock_server.close()
+        finally:
             conn.close()
-        except socket.error, (value, message):
-            if sock_server:
-              sock_server.close()
-
-            if conn:
-              conn.close()
-
-            print "Runtime Error:", message
-            sys.exit(1)
-    conn.close()
 
 
 sock = init_socket(10042)

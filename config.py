@@ -1,0 +1,2 @@
+DEBUG = True
+MAX_DATA_RECV = 4096
