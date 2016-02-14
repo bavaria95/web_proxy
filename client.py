@@ -41,7 +41,7 @@ def send_request_to_the_server(request):
             sys.exit(1)
     except:
         return ''
-        
+
     finally:
         if sock_server:
             sock_server.close()
