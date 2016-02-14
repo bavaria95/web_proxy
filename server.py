@@ -16,12 +16,43 @@ def init_socket(port):
 
     return sock
 
-def wait_for_input(sock):
+def wait_for_input(sock_browser):
     while True:
-        conn, client_addr = sock.accept()
+        conn, client_addr = sock_browser.accept()
         request = conn.recv(MAX_DATA_RECV)
         print(request)
         
+        try:
+            # create a socket to connect to the webserver
+            sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # test server, later would be parsed from headers
+            sock_server.connect(('gaia.cs.umass.edu', 80))  
+            sock_server.send(request)         # send request to webserver
+
+            # until there is data - receive from server and send to browser
+            while True:
+                # receive data from web server
+                data = sock_server.recv(MAX_DATA_RECV)
+
+                if (len(data) > 0):
+                    # send back to browser
+                    conn.send(data)
+                    print(data)
+                else:
+                    break
+
+            sock_server.close()
+            conn.close()
+        except socket.error, (value, message):
+            if sock_server:
+              sock_server.close()
+
+            if conn:
+              conn.close()
+
+            print "Runtime Error:", message
+            sys.exit(1)
     conn.close()
 
 
