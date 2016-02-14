@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import socket
 import sys
+import socket
+import signal
 import client
 from config import *
 
-def init_socket(port):
+def init_browser_socket(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('', port))  # '' - to be able to listen all interfaces
+    sock.bind(('127.0.0.1', port))  # '' - to be able to listen all interfaces
     sock.listen(1)
 
     if DEBUG:
@@ -33,7 +34,20 @@ def wait_for_input(sock_browser):
         finally:
             conn.close()
 
+def close_socket(sig, frame):
+    print(sig)
+    print(frame)
 
-sock = init_socket(10042)
-wait_for_input(sock)
+    if sock_browser:
+        print('closin socket')
+        sock_browser.close()
+
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+    signal.signal(signal.SIGINT, close_socket)
+    port = 10042
+    sock_browser = init_browser_socket(port)
+    wait_for_input(sock_browser)
 
