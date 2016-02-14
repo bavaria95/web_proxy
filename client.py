@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import socket
+import signal
 from config import *
 
 def send_request_to_the_server(request):
@@ -12,9 +13,11 @@ def send_request_to_the_server(request):
         sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # test server, later would be parsed from headers
-        sock_server.connect(('gaia.cs.umass.edu', 80))  
+        host='gaia.cs.umass.edu'
+        port=80
+        
+        sock_server.connect((host, port))  
         sock_server.send(request)         # send request to webserver
-
 
         # until there is data - receive from server and accumulate in buffer
         while True:
@@ -30,8 +33,9 @@ def send_request_to_the_server(request):
     except socket.error, (value, message):
         print "Runtime Error:", message
         sys.exit(1)
+
     finally:
         if sock_server:
             sock_server.close()
 
-    return buf
+    return ''.join(buf)

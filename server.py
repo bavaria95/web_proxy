@@ -9,6 +9,11 @@ from config import *
 
 def init_browser_socket(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    if DEBUG:
+        # allowing reuse socket, to remove TIME_WAIT TCP
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
+        
     sock.bind(('127.0.0.1', port))  # '' - to be able to listen all interfaces
     sock.listen(1)
 
@@ -27,7 +32,7 @@ def wait_for_input(sock_browser):
         try:
             resp = client.send_request_to_the_server(request)
 
-            conn.send(''.join(resp))
+            conn.send(resp)
             if DEBUG:
                 print(resp)
 
@@ -35,12 +40,10 @@ def wait_for_input(sock_browser):
             conn.close()
 
 def close_socket(sig, frame):
-    print(sig)
-    print(frame)
-
     if sock_browser:
-        print('closin socket')
         sock_browser.close()
+        if DEBUG:
+            print('Socket has been closed')
 
     sys.exit(0)
 
