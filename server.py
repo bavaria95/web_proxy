@@ -13,8 +13,8 @@ def init_browser_socket(port):
     if DEBUG:
         # allowing reuse socket, to remove TIME_WAIT TCP
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
-        
-    sock.bind(('127.0.0.1', port))  # '' - to be able to listen all interfaces
+
+    sock.bind(('', port))  # '' - to be able to listen all interfaces
     sock.listen(1)
 
     if DEBUG:
@@ -26,6 +26,7 @@ def wait_for_input(sock_browser):
     while True:
         conn, client_addr = sock_browser.accept()
         request = conn.recv(MAX_DATA_RECV)
+
         if DEBUG:
             print(request)
         
