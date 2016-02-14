@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import socket
+import sys
 
 DEBUG = True
 MAX_DATA_RECV = 4096
@@ -20,7 +21,8 @@ def wait_for_input(sock_browser):
     while True:
         conn, client_addr = sock_browser.accept()
         request = conn.recv(MAX_DATA_RECV)
-        print(request)
+        if DEBUG:
+            print(request)
         
         try:
             # create a socket to connect to the webserver
@@ -38,7 +40,8 @@ def wait_for_input(sock_browser):
                 if (len(data) > 0):
                     # send back to browser
                     conn.send(data)
-                    print(data)
+                    if DEBUG:
+                        print(data)
                 else:
                     break
 
