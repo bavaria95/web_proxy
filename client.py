@@ -36,11 +36,7 @@ def send_request_to_the_server(request):
                 buf.append(data)
 
     except socket.error, e:
-        if type(e) == socket.timeout:
-            if DEBUG:
-                print('timeout')
-            return ''.join(buf)
-        else:
+        if type(e) != socket.timeout:
             print "Runtime Error:", e
             sys.exit(1)
 
