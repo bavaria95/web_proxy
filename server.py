@@ -27,9 +27,10 @@ def processing_request(request, conn):
     print('starting new thread')
 
     try:
-        resp = client.send_request_to_the_server(request)
+        resp = client.send_request_to_the_server(request, conn)
 
-        conn.send(resp)
+        # conn.send(resp)
+        
         if DEBUG:
             print(resp)
     finally:

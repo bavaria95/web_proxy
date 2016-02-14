@@ -7,7 +7,7 @@ import socket
 import signal
 from config import *
 
-def send_request_to_the_server(request):
+def send_request_to_the_server(request, conn):
     buf = []
 
     try:
@@ -34,6 +34,7 @@ def send_request_to_the_server(request):
             else:
                 # add to buffer
                 buf.append(data)
+                conn.send(data)
 
     except socket.error, e:
         if type(e) != socket.timeout:
