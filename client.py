@@ -48,14 +48,11 @@ def send_request_to_the_server(request):
 
 def parse_host_and_port(request):
     request_line = request.split('\n')[0].split()
-    print(request_line[1])
-    # if request_line[0].lower() == 'get':
-    if True:
 
-        m = re.search('(https?:\/\/)?(w{3}\.)?([^:/]*)[^:]*(:\d+)?', request_line[1])
+    try:
+        url = request_line[1]
+        m = re.search('(https?:\/\/)?(w{3}\.)?([^:/]*)[^:]*(:\d+)?', url)
         if DEBUG:
-            print(m.group(1))
-            print(m.group(2))
             print(m.group(3))
             print(m.group(4))
             print
@@ -67,8 +64,9 @@ def parse_host_and_port(request):
         else:
             # default then
             port = 80
-    else:
-        host = 'gaia.cs.umass.edu'
+
+    except:
+        host = 'google.com'
         port = 80
 
     return (host, port)
