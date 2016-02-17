@@ -24,6 +24,7 @@ def send_request_to_the_server(request, conn):
         # reduced default timeout for waiting data, since it took >1s to 
         # be sure that there is no more data
         sock_server.settimeout(RECV_TIMEOUT)
+        
         # until there is data - receive from server and accumulate in buffer
         while True:
             # receive data from web server
@@ -32,9 +33,11 @@ def send_request_to_the_server(request, conn):
             if not data:
                 break
             else:
-                # add to buffer
-                buf.append(data)
-                conn.send(data)
+                if STORE_AND_FORWARD:
+                    # add to buffer
+                    buf.append(data)
+                else:
+                    conn.send(data)
 
     except socket.error, e:
         if type(e) != socket.timeout:
