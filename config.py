@@ -1,6 +1,9 @@
 # shows all requests, responses, etc.
 DEBUG = True
 
+# maximum number of input connections(from browser)
+MAX_CONNECTIONS = 50
+
 # maximum length of received data(in bytes)
 MAX_DATA_RECV = 4096
 

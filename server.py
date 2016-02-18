@@ -16,7 +16,7 @@ def init_browser_socket(port):
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
 
     sock.bind(('', port))  # '' - to be able to listen all interfaces
-    sock.listen(50)
+    sock.listen(MAX_CONNECTIONS)
 
     if DEBUG:
         print('Server has been successfully launched')
