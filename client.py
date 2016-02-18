@@ -24,7 +24,7 @@ def send_request_to_the_server(request, conn):
         # reduced default timeout for waiting data, since it took >1s to 
         # be sure that there is no more data
         sock_server.settimeout(RECV_TIMEOUT)
-        
+
         # until there is data - receive from server and accumulate in buffer
         while True:
             # receive data from web server
@@ -53,10 +53,32 @@ def send_request_to_the_server(request, conn):
     return ''.join(buf)
 
 def parse_host_and_port(request):
+
+    # firstly checking HOST field in headers
+    http_host = filter(lambda x: x.lower().startswith('host:'), request.split('\n'))
+    
+    if http_host:
+        host = http_host[0][6: -1]
+        if ':' in host:
+            host, port = host.split(':')
+        else:
+            host = host.split(':')[0]
+            # default then
+            port = 80
+        
+        if DEBUG:
+            print(host)
+            print(port)
+            print
+
+        return (host, port)
+
+
     request_line = request.split('\n')[0].split()
 
     url = request_line[1]
     m = re.search('(https?:\/\/)?(w{3}\.)?([^:/]*)[^:]*(:\d+)?', url)
+
     if DEBUG:
         print(m.group(3))
         print(m.group(4))
