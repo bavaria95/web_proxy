@@ -14,14 +14,13 @@ def send_request_to_the_server(request, conn):
         # create a socket to connect to the webserver
         sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        # test server, later would be parsed from headers
         host, port = parse_host_and_port(request)
         
         sock_server.connect((host, port))  
 
         sock_server.send(request)         # send request to webserver
 
-        # reduced default timeout for waiting data, since it took >1s to 
+        # reduced default timeout for waiting data, since it took >2s to 
         # be sure that there is no more data
         sock_server.settimeout(RECV_TIMEOUT)
 

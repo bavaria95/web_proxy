@@ -24,7 +24,8 @@ def init_browser_socket(port):
     return sock
 
 def processing_request(request, conn):
-    print('starting new thread')
+    if DEBUG:
+        print('starting new thread')
 
     try:
         resp = client.send_request_to_the_server(request, conn)
