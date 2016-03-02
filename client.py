@@ -5,6 +5,7 @@ import re
 import sys
 import socket
 import signal
+import helper
 from config import *
 
 def send_request_to_the_server(request, conn):
@@ -16,7 +17,12 @@ def send_request_to_the_server(request, conn):
 
         host, port = parse_host_and_port(request)
         
-        sock_server.connect((host, port))  
+        sock_server.connect((host, port)) 
+
+        if FILTERING_MODE:
+            url = request.split('\n')[0].split()[1]
+            if helper.is_url_forbidden(url):
+                return helper.format_redirect_response()
 
         sock_server.send(request)         # send request to webserver
 
@@ -51,8 +57,8 @@ def send_request_to_the_server(request, conn):
 
     return ''.join(buf)
 
-def parse_host_and_port(request):
 
+def parse_host_and_port(request):
     # firstly checking HOST field in headers
     http_host = filter(lambda x: x.lower().startswith('host:'), request.split('\n'))
     

@@ -7,6 +7,7 @@ import signal
 import thread
 import client
 from config import *
+import helper
 
 def init_browser_socket(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,7 +31,7 @@ def processing_request(request, conn):
     try:
         resp = client.send_request_to_the_server(request, conn)
 
-        if STORE_AND_FORWARD:
+        if STORE_AND_FORWARD or FILTERING_MODE:
             conn.send(resp)
         
         if DEBUG:

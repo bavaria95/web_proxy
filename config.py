@@ -12,4 +12,7 @@ RECV_TIMEOUT = 0.4
 
 # if true - waiting until receiving full response from the server(Store-and-Forward)
 # if false - resending to the browser immediately(cut-through)
-STORE_AND_FORWARD = False
+STORE_AND_FORWARD = True
+
+# if true - uses list of forbidden words and block pages with such words
+FILTERING_MODE = True
