@@ -10,9 +10,6 @@ from config import *
 
 def send_request_to_the_server(request, conn):
     buf = []
-    print('-'*80)
-    print(request.split('\n'))
-    print(request.split('\r\n'))
 
     try:
         if FILTERING_MODE:
@@ -34,6 +31,9 @@ def send_request_to_the_server(request, conn):
         # be sure that there is no more data
         sock_server.settimeout(RECV_TIMEOUT)
 
+        need_to_analyze = False
+        know_content_type = False
+
         # until there is data - receive from server and accumulate in buffer
         while True:
             # receive data from web server
@@ -42,11 +42,22 @@ def send_request_to_the_server(request, conn):
             if not data:
                 break
             else:
-                if STORE_AND_FORWARD:
+                if FILTERING_MODE:
+                    if helper.is_content_type_presented(data):
+                        know_content_type = True
+                        if helper.is_searchable_content_type(data):
+                            need_to_analyze = True
+
+                if not STORE_AND_FORWARD or (know_content_type and not need_to_analyze):
+                    # sending already collected buffer(for situation where we didn't know
+                    # content type by the first packet)
+                    buf.append(data)
+                    conn.send(''.join(buf))
+                    buf = []
+                else:
                     # add to buffer
                     buf.append(data)
-                else:
-                    conn.send(data)
+                    
 
     except socket.error, e:
         if type(e) != socket.timeout:
@@ -62,7 +73,12 @@ def send_request_to_the_server(request, conn):
         except:
             pass
 
-    return ''.join(buf)
+    output = ''.join(buf)
+    if need_to_analyze:
+        if helper.is_content_forbidden(output):
+            return helper.format_redirect_response_wrong_content()
+    
+    return output
 
 
 def parse_host_and_port(request):
