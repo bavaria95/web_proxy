@@ -12,6 +12,11 @@ def send_request_to_the_server(request, conn):
     buf = []
 
     try:
+        if FILTERING_MODE:
+            url = request.split('\n')[0].split()[1]
+            if helper.is_url_forbidden(url):
+                return helper.format_redirect_response()
+
         # create a socket to connect to the webserver
         sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -19,10 +24,6 @@ def send_request_to_the_server(request, conn):
         
         sock_server.connect((host, port)) 
 
-        if FILTERING_MODE:
-            url = request.split('\n')[0].split()[1]
-            if helper.is_url_forbidden(url):
-                return helper.format_redirect_response()
 
         sock_server.send(request)         # send request to webserver
 
@@ -52,8 +53,11 @@ def send_request_to_the_server(request, conn):
         return ''
 
     finally:
-        if sock_server:
-            sock_server.close()
+        try:
+            if sock_server:
+                sock_server.close()
+        except:
+            pass
 
     return ''.join(buf)
 
