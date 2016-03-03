@@ -10,12 +10,15 @@ from config import *
 
 def send_request_to_the_server(request, conn):
     buf = []
+    print('-'*80)
+    print(request.split('\n'))
+    print(request.split('\r\n'))
 
     try:
         if FILTERING_MODE:
-            url = request.split('\n')[0].split()[1]
+            url = request.split('\r\n')[0].split()[1]
             if helper.is_url_forbidden(url):
-                return helper.format_redirect_response()
+                return helper.format_redirect_response_wrong_url()
 
         # create a socket to connect to the webserver
         sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -64,10 +67,10 @@ def send_request_to_the_server(request, conn):
 
 def parse_host_and_port(request):
     # firstly checking HOST field in headers
-    http_host = filter(lambda x: x.lower().startswith('host:'), request.split('\n'))
+    http_host = filter(lambda x: x.lower().startswith('host:'), request.split('\r\n'))
     
     if http_host:
-        host = http_host[0][6: -1]
+        host = http_host[0][6: ]
         if ':' in host:
             host, port = host.split(':')
         else:
@@ -83,7 +86,7 @@ def parse_host_and_port(request):
         return (host, port)
 
 
-    request_line = request.split('\n')[0].split()
+    request_line = request.split('\r\n')[0].split()
 
     url = request_line[1]
     m = re.search('(https?:\/\/)?(w{3}\.)?([^:/]*)[^:]*(:\d+)?', url)
