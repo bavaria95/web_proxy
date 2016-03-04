@@ -1,6 +1,7 @@
 # shows all requests, responses, etc.
 DEBUG = False
 
+# from which port to listen from the browser
 PORT = 10042
 
 # maximum number of input connections(from browser)

@@ -25,6 +25,7 @@ def init_browser_socket(port):
     return sock
 
 def processing_request(request, conn):
+
     if DEBUG:
         print('starting new thread')
 
@@ -43,6 +44,10 @@ def processing_request(request, conn):
 
 
 def wait_for_input(sock_browser):
+    '''
+    waits for connections from the browser, then initiate new thread which
+    does request to the web server
+    '''
     while True:
         conn, client_addr = sock_browser.accept()
         request = conn.recv(MAX_DATA_RECV)

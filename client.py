@@ -9,6 +9,14 @@ import helper
 from config import *
 
 def send_request_to_the_server(request, conn):
+    '''
+    retransmits request from the browser to the actual webserver(
+        with some modifications, if needed)
+    then waits for the all data in response and based on enabled filtering mode
+    and necessity of filtering current response - sends it directly to the browser 
+    or accumulate, check permissibility of the content and send whole gather buffer/redirect
+    '''
+
     buf = []
 
     try:
@@ -86,6 +94,10 @@ def send_request_to_the_server(request, conn):
 
 
 def parse_host_and_port(request):
+    '''
+    extracts host address and port from the request headers
+    '''
+
     # firstly checking HOST field in headers
     http_host = filter(lambda x: x.lower().startswith('host:'), request.split('\r\n'))
     
@@ -105,7 +117,7 @@ def parse_host_and_port(request):
 
         return (host, port)
 
-
+    # if there is no HOST header - check in the request line(first line in the header)
     request_line = request.split('\r\n')[0].split()
 
     url = request_line[1]
