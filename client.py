@@ -57,6 +57,8 @@ def send_request_to_the_server(request, conn):
                     # content type by the first packet)
                     buf.append(data)
                     conn.send(''.join(buf))
+                    if DEBUG:
+                        print(''.join(buf))
                     buf = []
 
     except socket.error, e:
@@ -64,7 +66,7 @@ def send_request_to_the_server(request, conn):
             print "Runtime Error:", e
             sys.exit(1)
     except:
-        return ''
+        pass
 
     finally:
         try:
@@ -76,11 +78,9 @@ def send_request_to_the_server(request, conn):
     output = ''.join(buf)
     if need_to_analyze:
         if helper.is_content_forbidden(output):
-            return helper.format_redirect_response_wrong_content()
-        return output
-    
-    return ''
-
+            conn.send(helper.format_redirect_response_wrong_content())
+            return 
+        conn.send(output)
 
 def parse_host_and_port(request):
     # firstly checking HOST field in headers
