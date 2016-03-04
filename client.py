@@ -48,16 +48,16 @@ def send_request_to_the_server(request, conn):
                         if helper.is_searchable_content_type(data):
                             need_to_analyze = True
 
-                if not STORE_AND_FORWARD or (know_content_type and not need_to_analyze):
+                if not know_content_type:
+                    buf.append(data)
+                elif know_content_type and need_to_analyze:
+                    buf.append(data)
+                elif know_content_type and not need_to_analyze:
                     # sending already collected buffer(for situation where we didn't know
                     # content type by the first packet)
                     buf.append(data)
                     conn.send(''.join(buf))
                     buf = []
-                else:
-                    # add to buffer
-                    buf.append(data)
-                    
 
     except socket.error, e:
         if type(e) != socket.timeout:
@@ -77,8 +77,9 @@ def send_request_to_the_server(request, conn):
     if need_to_analyze:
         if helper.is_content_forbidden(output):
             return helper.format_redirect_response_wrong_content()
+        return output
     
-    return output
+    return ''
 
 
 def parse_host_and_port(request):

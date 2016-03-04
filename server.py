@@ -31,11 +31,13 @@ def processing_request(request, conn):
     try:
         resp = client.send_request_to_the_server(request, conn)
 
-        if STORE_AND_FORWARD or FILTERING_MODE:
+        if FILTERING_MODE:
             conn.send(resp)
         
         if DEBUG:
             print(resp)
+    except:
+        pass
     finally:
         conn.close()
 
