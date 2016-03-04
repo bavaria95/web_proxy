@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from config import *
+import re
 
 def get_list_of_forbidden():
     with open('forbidden.txt', 'r') as content_file:
@@ -41,6 +42,6 @@ def is_content_forbidden(content):
     # TODO. search only in payload
     return any(filter(lambda x: x in content.lower(), forbidden))
 
-
-
-    
+def ask_for_non_gziped(req):
+    return '\r\n'.join(filter(lambda x: not x.lower().startswith('accept-encoding: ') and 'gzip' not in x,
+          req.split('\r\n')))

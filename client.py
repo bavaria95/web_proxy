@@ -24,6 +24,7 @@ def send_request_to_the_server(request, conn):
         
         sock_server.connect((host, port)) 
 
+        request = helper.ask_for_non_gziped(request)
 
         sock_server.send(request)         # send request to webserver
 

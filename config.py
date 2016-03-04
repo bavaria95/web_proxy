@@ -1,5 +1,5 @@
 # shows all requests, responses, etc.
-DEBUG = True
+DEBUG = False
 
 PORT = 10042
 
