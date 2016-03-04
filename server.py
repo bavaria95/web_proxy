@@ -29,8 +29,13 @@ def processing_request(request, conn):
         print('starting new thread')
 
     try:
-        client.send_request_to_the_server(request, conn)
+        resp = client.send_request_to_the_server(request, conn)
 
+        if FILTERING_MODE:
+            conn.send(resp)
+        
+        if DEBUG:
+            print(resp)
     except:
         pass
     finally:

@@ -48,7 +48,9 @@ def send_request_to_the_server(request, conn):
                         if helper.is_searchable_content_type(data):
                             need_to_analyze = True
 
-                if not know_content_type:
+                if not FILTERING_MODE:
+                    conn.send(data)
+                elif not know_content_type:
                     buf.append(data)
                 elif know_content_type and need_to_analyze:
                     buf.append(data)
@@ -57,8 +59,6 @@ def send_request_to_the_server(request, conn):
                     # content type by the first packet)
                     buf.append(data)
                     conn.send(''.join(buf))
-                    if DEBUG:
-                        print(''.join(buf))
                     buf = []
 
     except socket.error, e:
@@ -66,7 +66,7 @@ def send_request_to_the_server(request, conn):
             print "Runtime Error:", e
             sys.exit(1)
     except:
-        pass
+        return ''
 
     finally:
         try:
@@ -78,9 +78,11 @@ def send_request_to_the_server(request, conn):
     output = ''.join(buf)
     if need_to_analyze:
         if helper.is_content_forbidden(output):
-            conn.send(helper.format_redirect_response_wrong_content())
-            return 
-        conn.send(output)
+            return helper.format_redirect_response_wrong_content()
+        return output
+    
+    return ''
+
 
 def parse_host_and_port(request):
     # firstly checking HOST field in headers
