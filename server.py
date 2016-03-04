@@ -63,7 +63,6 @@ def close_socket(sig, frame):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, close_socket)
-    port = 10042
-    sock_browser = init_browser_socket(port)
+    sock_browser = init_browser_socket(PORT)
     wait_for_input(sock_browser)
 

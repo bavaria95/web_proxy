@@ -1,5 +1,7 @@
 # shows all requests, responses, etc.
-DEBUG = True
+DEBUG = False
+
+PORT = 10042
 
 # maximum number of input connections(from browser)
 MAX_CONNECTIONS = 50
